@@ -1,0 +1,12 @@
+firebase_admin==6.6.0
+joblib==1.4.2
+numpy==1.24.3
+pandas==2.0.3
+plotly==5.23.0
+shiny==1.0.0
+shinyswatch==0.7.0
+shinywidgets==0.3.3
+torch==2.4.0
+transformers==4.44.2
+umap_learn==0.5.7
+pyarrow==17.0.0

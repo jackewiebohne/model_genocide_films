@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+      line-height: 1.6;
+    }
+    h1, h2, h3 {
+      margin-top: 1em;
+    }
+    p {
+      margin-bottom: 1em;
+    }
+    /* Make the body take up more width on mobile, and less padding */
+    @media (max-width: 600px) {
+    body {
+        max-width: 100%;
+        padding: 0 1em; /* Add some padding to the sides */
+    }
+    /* Main text paragraphs (without .5in margin) */
+    p.MsoNormal {
+    margin-left: 0 !important;   /* Remove any inline left margin */
+    margin-right: 0 !important;  /* Remove any inline right margin */
+    line-height: 1.5;
+    font-size: 1em;
+    width: 100%;  /* Ensure full use of available width */
+  }
+}
+  </style>
+</head>
+<body>
+  <h1>The Data</h1>
+  <p> The data consists of three filmographies which have been merged for the purposes
+    of this webpage. The first filmography is a <b>hand-curated list of documentaries on
+    genocides</b> created entirely <a href="https://www.researchgate.net/profile/Julian-Koch-15" target="_blank">by me</a>.
+    This filmography is focused on seven genocides: the Herero and Nama genocide, the 
+    Armenian Genocide, the Holocaust, the Indonesian Genocide, the Cambodian genocide, 
+    the Rwandan Genocide, and the Bosnian genocide. However, it contains a large number 
+    of documentaries on other atrocities, especially the Holodomor (Stalin's starvation 
+    of Ukrainians) but also the Guatemala genocide and the Darfur genocide. However, 
+    since most of the synopses I wrote pertain to the seven genocides, semantic searches
+    <i>here</i> for these other genocides will usually not return much, because the 
+    purpose of the search function on this webpage is to find interesting films and visualise
+    their semantic space (on that later). The synopses and all other data have been collected
+    by me and, where I wrote synopses, are on average by far the most elaborate of the
+    three filmographies here. Errors are entirely mine, as well :-)
+    </p>
+  <p> The second filmography is the scraped Holocaust filmography of <b>Yad Vashem</b> (in adherence
+    to their robots.txt). This does contain films on other genocides as well (e.g. Hotel 
+    Rwanada) and those are unfortunately not marked in an easily identifiable way. Thus 
+    <i>sometimes</i> semantic searches will return some of these films but incorrectly 
+    labelled as being on the Holocaust rather than the Rwandan genocide, for example.
+    Yad Vashem is the largest Holocaust filmography and mostly in English, but does 
+    contain a substantial number of Hebrew entries. The entries contain not only docu-
+    mentaries but also all sorts of other films and film genres.
+    </p>
+  <p> The third filmography is the scraped filmography <b>Cinematography of the Holocaust</b> hosted
+    by the German Fritz Bauer institute, but discontinued since 2014 or so. This filmography
+    is <i>exclusively</i> on the Holocaust and contains a large number of earlier films
+    from the 1930s until the 1970s where Yad Vashem has some of its biggest gaps. Plot
+    synopses and film information from this filmography is more elaborate than Yad Vashem's.
+    It does contain a relatively substantial amount of archival film entries and is especially
+    rich in info and entries on German Holocaust-related film productions. Many of its entries
+    are also in German, not English.
+    </p>
+  <p> These three filmographies have been merged so that with a search you can pass over all 
+    three at once. I have sought to remove duplicates (especially relevant between Yad Vashem
+    and Cinematography of the Holocaust) with various (deterministic) text comparison methods
+    (Jaro Winkler on titles and years with several added rules) but there are no doubt still
+    some duplicates. I have also sought to assimilate the different entry-styles for the 
+    different columns across the data (e.g. durations should be expressed not in the physical
+    length of the reels), but since this is a side project to my original research and most
+    deviations are minor, I have not manually or automatedly corrected everything.
+    </p>
+  <p> For publications related to the hand-curated data and the overall genocide project see:
+    <p style="text-indent: 2em;"> <a href="https://doi.org/10.1080/14623528.2024.2388413" target="_blank">Mass Death, Population Decline, and Deprivation: A Capability Approach
+    </a>, Journal of Genocide Research, 2024</p>
+    <p style="text-indent: 2em;"> <a href="https://doi.org/10.5281/zenodo.11521854" target="_blank">The Ethics of Representing Perpetrators in Documentaries on Genocide
+    </a>, European Journal of Cultural Studies, 2023</p>
+    <p style="text-indent: 2em;"><a href="https://doi.org/10.5281/zenodo.11521785" target="_blank">Perpetrating Narrative: The Ethics of Unreliable Narration in The Act of Killing
+    </a>, Quarterly Review of Film and Video, 2022</p>
+    <p style="text-indent: 2em;"><a href="https://doi.org/10.5281/zenodo.11521757" target="_blank">The Truth of Reenactments: Reliving, Reconstructing, and Contesting History in Documentaries on Genocide
+    </a>, Studies in Documentary Film, 2023</p>
+    For a detailed history of the genocides covered here, see my related webpage <a href="https://jackewiebohne.github.io/model_genocide_films/search" target="_blank">History of Seven Genocides</a>.
+  </p>    
+</p>
+  <h1>Vector search and how it works</h1>
+  <p>The vector search is powered by a case-sensitive multilingual model <a href="https://huggingface.co/sentence-transformers/all-MiniLM-L12-v2" target="_blank">(MiniLM-L12-v2)</a>.
+    When you input a search, your search is first pre-processed (tokenized) and then
+    passed through the model. The model can handle non-English searches, but the results 
+    will be in any of the languages of the filmographies (mostly English, German, Hebrew)
+    that are similar (cosine similar, to be precise) to the search. The model is trained
+    so that the model's representation (a vector of many dimensions) of, for example, 
+    "Wehrmacht" and "German army during WWII" will be very similar and so a search for either
+    would return sentences (and their corresponding films) containing both. On the other 
+    hand literal word searches (without the model) for "Wehrmacht" would only return 
+    exact matches, not the English "German army".
+    If you are interested in literal searches through the filmographies and visualisation 
+    capabilities, <a href="https://jackewiebohne.shinyapps.io/shiny1/" target="_blank">check out this sister-page</a>.
+  </p>
+  <p> Vector search is powerful because it takes contextual meaning into account and generates 
+    a different numerical representation (vector) for the sentence "Poles as victims of German 
+    persecution during WWII" than compared to "Poles as collaborators of German persecution of Jews".
+    The returned results <i>should be</i> correspondingly different (though since this is a small
+    model hosted on a slim web-app the difference in result may be small). In general, however, 
+    doing such a similarity search allows for remarkably good results. For example, if interested
+    in German military crimes during WWII, a literal search for "Wehrmacht" would return lots of 
+    results on German military operations in WWII which are irrelevant, whereas "Wehrmacht crimes"
+    or "German army crimes" etc. would return only films and plot synopses with those exact phrases.
+    A semantic similarity search, however, would mostly hit the nail on the head.
+</p>
+    <h1>What do the visualisations show?</h1>
+    <p>The model responsible for producing vectors based on your search and comparing them with 
+    sentences in the filmographies produces a vector that has way too many dimensions for us, 
+    miserable humans, to visualise (384 dimensions, so 384 numbers). It also turns out that the
+    vectors this model produces for the purpose of powerful of searches are not very interesting
+    for us humans to look at once we reduce the dimensionality of the vectors (there are many
+    mathematical techniques for this) and graph them. In 3D space the vectors for all the sentences
+    in the filmographies look like a sphere, in 2D like a filled-in circle (roughly).
+</p>
+    <p> We humans, however, don't think like computers and the vectors the model used for
+    its searches are unlikely to ever convey useful information to us. Now, there are many
+    ways to reshape these vectors into something we <i>do</i> find interesting, but this
+    is, of course, up to individual preferences. Since all of these are filmographies on
+    genocide, the most interesting aspect to me was a visualisation of the <em>semantic space
+    of genocide films</em>. So I trained another model (a basic neural network) to use the 
+    word vectors from the other, bigger model and predict what genocide the vector / the sentence
+    is on. Since the Holocaust has thousands more films than all other genocides combined, I
+    also used vectors obtained by passing multilingual Wikipedia textdata on the genocides
+    through the big models to get more data and balance out the numbers for ultimately 
+    better predictions. The resulting model is able to predict to which genocide a sentence
+    belongs with about 70% accuracy - not bad considering there many unclassifiable sentences
+    like this:
+    <li> "'It could happen again today or tomorrow' and 'new generations cannot understand the 
+    injustices of yesteryear, yet the older generations remain silent as new crimes 
+    are committed against humanity'</li>
+    </p>
+    <p>The predictions for each sentence, another a multidimensional vector for each, are still
+    too high-dimensional for us to visualise. Luckily clever people have found ways to reduce
+    the dimensions so we can visualise them in such a way that the characteristic shapes and
+    relations of the vectors to each other in the original dimensional space are preserved
+    as much as possible when we look at them in 2D or 3D space. The current state-of-the-art
+    dimensionality reduction algorithm for most purposes is UMAP (Universal Mapping Algorithm) 
+    which is what I used here. If you want to find out how it works in a visually intuitive 
+    way and how it compares to other dimensionality reduction algorithms, you can check out this
+    <a href="https://pair-code.github.io/understanding-umap/" target="_blank">beautiful page</a>.
+</p>
+    <p>Of course many other characteristics could have been used to focus on, for example 
+    predicting the decade the film corresponding to each sentence was produced in, the 
+    country it was produced in, or the film genre. I've tried all of these, with varying 
+    success (they're all hard to predict from a single sentence for computers and humans 
+    alike). Although prediction accuracy was not at the forefront when ultimately we just
+    want visualisable vectors, it's nonetheless not irrelevant since inaccurate predictions
+    would mean that there is great uncertainty about the way the vectors are placed in the 
+    space. These models are not available here to reduce the memory footrpint space. In any case,
+    the semantic space of genocide films is clearly the main interest. If interested, you
+    can always color the points in the visualisation by (actual, not predicted) production 
+    country, decade, or film genre. What you then see is how the different countries, decades,
+    and genres are distributed in the (predicted and reduced) genocide film space.
+</p>
+    <p> Thus in brief: you can search for any sentence in any language in the filmographies
+    and get back a list of sentences from the filmographies that are most similar to your search.
+    You can then proceed to visualise the filmographic space on genocide with your search term 
+    (displayed as a large plus sign). 
+    </p>
+    <br>
+    <p>This project was funded by the European Commission as part of Horizon 2020, Grant number: 101025897</p>
+</body>
+</html>
